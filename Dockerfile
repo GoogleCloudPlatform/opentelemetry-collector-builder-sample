@@ -12,22 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-OUTPUT_DIR=bin
-OTEL_VERSION=0.57.0
+FROM golang:1.18 as build
+WORKDIR /app
+COPY . .
+RUN bin/ocb --config=builder-config.yaml --name=otelcol-custom --output-path=.
 
-IMAGE_NAME=otelcol-custom
-IMAGE_VERSION=latest
+FROM gcr.io/distroless/base-debian11
+COPY --from=build /app/otelcol-custom /
+EXPOSE 4317/tcp 55678/tcp 55679/tcp
 
-.PHONY: setup
-setup:
-	curl -L -o ${OUTPUT_DIR}/ocb --create-dirs https://github.com/open-telemetry/opentelemetry-collector/releases/download/v${OTEL_VERSION}/ocb_${OTEL_VERSION}_linux_amd64
-	chmod +x ${OUTPUT_DIR}/ocb
-
-
-.PHONY: build
-build: setup
-	bin/ocb --config=builder-config.yaml --name=otelcol-custom --output-path=bin/.
-
-.PHONY: docker-build
-docker-build:
-	docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} .
+CMD ["/otelcol-custom"]
