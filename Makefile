@@ -18,6 +18,9 @@ OTEL_VERSION=0.57.0
 IMAGE_NAME=otelcol-custom
 IMAGE_VERSION=latest
 
+CONTAINER_REGISTRY=otel-collectors
+REGISTRY_LOCATION=us-central1
+
 .PHONY: setup
 setup:
 	curl -L -o ${OUTPUT_DIR}/ocb --create-dirs https://github.com/open-telemetry/opentelemetry-collector/releases/download/v${OTEL_VERSION}/ocb_${OTEL_VERSION}_linux_amd64
@@ -31,3 +34,11 @@ build: setup
 .PHONY: docker-build
 docker-build:
 	docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} .
+
+.PHONY: cloudbuild-setup
+cloudbuild-setup:
+	gcloud artifacts repositories create ${CONTAINER_REGISTRY} --repository-format=docker --location=${REGISTRY_LOCATION} --description="Custom build OpenTelemetry collector container registry"
+
+.PHONY: cloudbuild
+cloudbuild:
+	gcloud beta builds submit --substitutions=_COLLECTOR_REPO=${CONTAINER_REGISTRY},_COLLECTOR_IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}

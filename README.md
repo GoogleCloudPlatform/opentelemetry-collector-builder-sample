@@ -4,6 +4,8 @@ This repository holds a sample for using the [OpenTelemetry Collector Builder](h
 
 # Using this repo
 
+## Building a collector
+
 To build a custom collector with this repo, first edit `[builder-config.yaml](builder-config.yaml)` to set which
 exporters and receivers to build into the collector.
 
@@ -17,6 +19,24 @@ Or build a docker image with:
 ```
 make docker-build
 ```
+
+## Building with Cloud Build and Artifact Registry
+
+This repo also contains the commands necessary to build a collector using
+[Cloud Build](https://cloud.google.com/build) and publish the container image
+in [Artifact Registry](https://cloud.google.com/artifact-registry).
+
+First, set up a container registry with:
+```
+make cloudbuild-setup
+```
+
+Then build and push the custom collector image to that registry with:
+```
+make cloudbuild
+```
+
+The Cloud Build steps are defined in [cloudbuild.yaml](cloudbuild.yaml).
 
 ## Contributing
 
