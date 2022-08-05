@@ -6,7 +6,7 @@ This repository holds a sample for using the [OpenTelemetry Collector Builder](h
 
 ## Building a collector
 
-To build a custom collector with this repo, first edit `[builder-config.yaml](builder-config.yaml)` to set which
+To build a custom collector with this repo, first edit [`builder-config.yaml`](builder-config.yaml) to set which
 exporters and receivers to build into the collector.
 
 Then to build a local collector binary run:
@@ -36,7 +36,7 @@ Then build and push the custom collector image to that registry with:
 make cloudbuild
 ```
 
-The Cloud Build steps are defined in [cloudbuild.yaml](cloudbuild.yaml).
+The Cloud Build steps are defined in [`cloudbuild.yaml`](cloudbuild.yaml).
 
 ## Contributing
 
