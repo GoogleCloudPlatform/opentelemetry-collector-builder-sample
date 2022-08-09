@@ -13,7 +13,7 @@
 # limitations under the License.
 
 OUTPUT_DIR=bin
-OTEL_VERSION=0.57.0
+OTEL_VERSION=0.57.2
 
 IMAGE_NAME=otelcol-custom
 IMAGE_VERSION=latest
