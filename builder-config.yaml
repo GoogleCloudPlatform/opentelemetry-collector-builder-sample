@@ -21,6 +21,7 @@ exporters:
     gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlemanagedprometheusexporter v0.57.2
   - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter
     gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter v0.57.2
+
 receivers:
   - import: go.opentelemetry.io/collector/receiver/otlpreceiver
     gomod: go.opentelemetry.io/collector v0.57.2
@@ -30,4 +31,8 @@ receivers:
     gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/googlecloudspannerreceiver v0.57.2
   - import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver
     gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.57.2
+
+processors:
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.57.2
 
