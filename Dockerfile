@@ -19,6 +19,9 @@ RUN bin/ocb --config=builder-config.yaml --name=otelcol-custom --output-path=.
 
 FROM gcr.io/distroless/base-debian11
 COPY --from=build /app/otelcol-custom /
+# 4317 - default OTLP receiver
+# 55678 - opencensus (tracing) receiver
+# 55679 - zpages
 EXPOSE 4317/tcp 55678/tcp 55679/tcp
 
 CMD ["/otelcol-custom"]
