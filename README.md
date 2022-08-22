@@ -2,11 +2,45 @@
 
 This repository holds a sample for using the [OpenTelemetry Collector Builder](https://github.com/open-telemetry/opentelemetry-collector-builder) configured with components generally useful for GCP deployments.
 
+Table of Contents
+=================
+
+* [Using this repo](#using-this-repo)
 * [Building a collector](#building-a-collector)
 * [Building with Cloud Build and Artifact Registry](#building-with-cloud-build-and-artifact-registry)
 * [Running on GKE](#running-on-gke)
+   * [Prerequisites](#prerequisites)
+      * [Setting up Workload Identity](#setting-up-workload-identity)
+      * [Grant Artifact Registry permissions](#grant-artifact-registry-permissions)
+   * [Set up namespace](#set-up-namespace)
+   * [Apply Workload Identity permissions](#apply-workload-identity-permissions)
+   * [Create ConfigMap](#create-configmap)
+   * [Build a container image](#build-a-container-image)
+   * [(Optional) Cleanup](#optional-cleanup)
+      * [Remove gcloud service account and bindings](#remove-gcloud-service-account-and-bindings)
+      * [Remove Artifact Registry permissions from default service account](#remove-artifact-registry-permissions-from-default-service-account)
+      * [Remove Kubernetes resources](#remove-kubernetes-resources)
+* [Contributing](#contributing)
+* [License](#license)
 
 # Using this repo
+
+This repo is intended to be used as a sample demonstrating the full series of steps required to
+build and deploy a custom OpenTelemetry Collector with GCP.
+
+There are [public Docker images](https://hub.docker.com/r/otel/opentelemetry-collector-contrib/tags) available
+for running the OpenTelemetry Collector, but these images can be [over 40MB](https://hub.docker.com/layers/otel/opentelemetry-collector-contrib/latest/images/sha256-fc00a2b722597af81f4335cfe15aa6ac76724f74b2f017ee24739cbcf5c39ec1?context=explore)
+in size (and growing) and are packaged with [many components](https://github.com/open-telemetry/opentelemetry-collector-contrib)
+which you may not need for your use case.
+
+In contrast, a custom-built collector contains only the components you need, which can drastically shrink
+its size (down to as small as a few MB) and provide security from extraneous compiled code. This repo
+focuses on making it easy to build a GCP-specific collector with only those necessary components.
+
+This repo is meant to be cloned, forked, or otherwise used within your own project. Feel free
+to customize the [builder config](builder-config.yaml), [collector config](otel-config.yaml), or
+[Cloud Build steps](cloudbuild.yml) to your needs. This repo provides a [Makefile](Makefile) that
+automates many of the commands needed to interact with these files, which are described below.
 
 ## Building a collector
 
