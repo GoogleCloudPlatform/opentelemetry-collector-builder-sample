@@ -36,6 +36,11 @@ docker-build:
 	docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} .
 	sed -i "s/%OTEL_COLLECTOR_IMAGE%/${IMAGE_NAME}:${IMAGE_VERSION}/g" k8s/manifest.yaml
 
+.PHONY: docker-push
+docker-push:
+	docker tag ${IMAGE_NAME}:${IMAGE_VERSION} ${REGISTRY_LOCATION}-docker.pkg.dev/${GCLOUD_PROJECT}/${CONTAINER_REGISTRY}/${IMAGE_NAME}:${IMAGE_VERSION}
+	docker push ${REGISTRY_LOCATION}-docker.pkg.dev/${GCLOUD_PROJECT}/${CONTAINER_REGISTRY}/${IMAGE_NAME}:${IMAGE_VERSION}
+
 .PHONY: cloudbuild-setup
 cloudbuild-setup:
 	gcloud artifacts repositories create ${CONTAINER_REGISTRY} --repository-format=docker --location=${REGISTRY_LOCATION} --description="Custom build OpenTelemetry collector container registry"

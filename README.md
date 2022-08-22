@@ -58,6 +58,26 @@ Or build a docker image with:
 make docker-build
 ```
 
+Set `$GCLOUD_PROJECT` and `$CONTAINER_REGISTRY` to tag and push the resulting image:
+
+```
+export GCLOUD_PROJECT=my-gcp-project
+export CONTAINER_REGISTRY=custom-collectors
+make docker-push
+```
+
+(If you get a permission error, you may need to run `gcloud auth configure-docker` to authenticate
+Docker against your container registry).
+
+You can customize these build steps by setting the following environment variables defined in the [Makefile](Makefile):
+
+* `IMAGE_NAME` - name of the collector image, default: `otelcol-custom`
+* `IMAGE_VERSION` - version of the collector image, default: `latest`
+* `REGISTRY_LOCATION` - location of the registry to create/use with commands in this repo, default: `us-central1`
+* `CONTAINER_REGISTRY` - name of the registry to hold collector images, default: `otel-collectors`
+
+See "Artifact Registry" steps below for more info on setting up a container registry.
+
 ## Building with Cloud Build and Artifact Registry
 
 This repo also contains the commands necessary to build a collector using
@@ -68,6 +88,9 @@ First, set up a container registry with:
 ```
 make cloudbuild-setup
 ```
+
+(This command makes use of environment variables defined in the [Makefile](Makefile) to name
+the new registry).
 
 Then build and push the custom collector image to that registry with:
 ```
@@ -189,7 +212,8 @@ kubectl create configmap otel-config --from-file=./otel-config.yaml -n $OTEL_NAM
 
 If you did not do so already, run `make docker-build` to build a container image based on
 the `builder-config.yaml` file in this repo (see [Building a collector](#building-a-collector)).
-Note that you may have to run `docker push` to make this image available in your cluster.
+You can then run `make docker-push` to push the resulting image (note: you must set certain project and
+registry environment variables for this push to work, as shown in that section).
 
 Once the image is built, the file [`k8s/manifest.yaml`](k8s/manifest.yaml) will automatically be
 updated to reference your image name. Create this manifest in your cluster with:
