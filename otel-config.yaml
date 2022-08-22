@@ -1,0 +1,114 @@
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+# This section shows a sample pubsub receiver config. Uncomment it to
+# use your own. See https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/googlecloudpubsubreceiver#google-pubsub-receiver
+#   googlecloudpubsub:
+#     project: my-project
+#     subscription: projects/my-project/subscriptions/otel
+#     encoding: raw_json
+
+# This section shows a sample cloud spanner receiver config. Uncomment it to
+# use your own. See https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/googlecloudspannerreceiver#google-cloud-spanner-receiver
+#   googlecloudspanner:
+#     collection_interval: 120s
+#     top_metrics_query_max_rows: 10
+#     backfill_enabled: true
+#     cardinality_total_limit: 200000
+#     projects:
+#       - project_id: "spanner project 1"
+#         service_account_key: "path to spanner project 1 service account json key"
+#         instances:
+#           - instance_id: "id1"
+#             databases:
+#               - "db11"
+#               - "db12"
+
+# This section shows a sample prometheus config, uncomment it and edit with
+# your own config. See https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/googlemanagedprometheusexporter#example-configuration
+#
+#   prometheus:
+#     config:
+#       scrape_configs:
+#         # Add your prometheus scrape configuration here.
+#         # Using kubernetes_sd_configs with namespaced resources (e.g. pod)
+#         # ensures the namespace is set on your metrics.
+#         - job_name: 'kubernetes-pods'
+#             kubernetes_sd_configs:
+#             - role: pod
+#             relabel_configs:
+#             - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+#             action: keep
+#             regex: true
+#             - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+#             action: replace
+#             target_label: __metrics_path__
+#             regex: (.+)
+#             - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+#             action: replace
+#             regex: (.+):(?:\d+);(\d+)
+#             replacement: $$1:$$2
+#             target_label: __address__
+#             - action: labelmap
+#             regex: __meta_kubernetes_pod_label_(.+)
+
+exporters:
+  googlecloud:
+    retry_on_failure:
+      enabled: false
+
+  googlemanagedprometheus:
+
+#   googlecloudpubsub:
+#     project: my-project
+#     topic: my-topic
+
+  logging:
+    loglevel: debug
+
+processors:
+  resourcedetection/gke:
+    detectors: [env, gke]
+    timeout: 2s
+    override: false
+
+  memory_limiter:
+  batch:
+    send_batch_max_size: 200
+    send_batch_size: 200
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resourcedetection/gke]
+      exporters: [googlecloud, logging]
+
+    metrics:
+      receivers: [otlp]
+      #receivers: [prometheus]
+      processors: [memory_limiter, batch, resourcedetection/gke]
+      exporters: [googlecloud, logging]
+      #exporters: [googlemanagedprometheus]
+
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resourcedetection/gke]
+      exporters: [googlecloud, logging]

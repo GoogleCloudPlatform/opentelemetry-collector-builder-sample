@@ -34,6 +34,7 @@ build: setup
 .PHONY: docker-build
 docker-build:
 	docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} .
+	sed -i "s/%OTEL_COLLECTOR_IMAGE%/${IMAGE_NAME}:${IMAGE_VERSION}/g" k8s/manifest.yaml
 
 .PHONY: cloudbuild-setup
 cloudbuild-setup:
