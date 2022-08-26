@@ -41,33 +41,22 @@ receivers:
 #               - "db11"
 #               - "db12"
 
-# This section shows a sample prometheus config, uncomment it and edit with
-# your own config. See https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/googlemanagedprometheusexporter#example-configuration
-#
-#   prometheus:
-#     config:
-#       scrape_configs:
-#         # Add your prometheus scrape configuration here.
-#         # Using kubernetes_sd_configs with namespaced resources (e.g. pod)
-#         # ensures the namespace is set on your metrics.
-#         - job_name: 'kubernetes-pods'
-#             kubernetes_sd_configs:
-#             - role: pod
-#             relabel_configs:
-#             - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-#             action: keep
-#             regex: true
-#             - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-#             action: replace
-#             target_label: __metrics_path__
-#             regex: (.+)
-#             - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-#             action: replace
-#             regex: (.+):(?:\d+);(\d+)
-#             replacement: $$1:$$2
-#             target_label: __address__
-#             - action: labelmap
-#             regex: __meta_kubernetes_pod_label_(.+)
+# This section shows a sample prometheus config for self-observability metrics
+# See https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/googlemanagedprometheusexporter#example-configuration
+
+  prometheus/self:
+    config:
+      scrape_configs:
+      - job_name: 'otel-collector'
+        scrape_interval: 10s
+        static_configs:
+        - targets: ['0.0.0.0:8888']
+        # I get duplicate label errors on export without dropping the incoming labels.
+        metric_relabel_configs:
+        - regex: service_instance_id
+          action: labeldrop
+        - regex: service_version
+          action: labeldrop
 
 exporters:
   googlecloud:
@@ -102,8 +91,7 @@ service:
       exporters: [googlecloud, logging]
 
     metrics:
-      receivers: [otlp]
-      #receivers: [prometheus]
+      receivers: [otlp, prometheus/self]
       processors: [memory_limiter, batch, resourcedetection/gke]
       exporters: [googlecloud, logging]
       #exporters: [googlemanagedprometheus]
