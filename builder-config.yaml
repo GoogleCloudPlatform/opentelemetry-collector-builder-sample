@@ -12,16 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-exporters:
-  - import: go.opentelemetry.io/collector/exporter/loggingexporter
-    gomod: go.opentelemetry.io/collector v0.57.2
-  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter
-    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter v0.57.2
-  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlemanagedprometheusexporter
-    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlemanagedprometheusexporter v0.57.2
-  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter
-    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter v0.57.2
-
 receivers:
   - import: go.opentelemetry.io/collector/receiver/otlpreceiver
     gomod: go.opentelemetry.io/collector v0.57.2
@@ -35,4 +25,17 @@ receivers:
 processors:
   - import: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor
     gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.57.2
+  - import: go.opentelemetry.io/collector/processor/memorylimiterprocessor
+    gomod: go.opentelemetry.io/collector v0.57.2
+  - import: go.opentelemetry.io/collector/processor/batchprocessor
+    gomod: go.opentelemetry.io/collector v0.57.2
 
+exporters:
+  - import: go.opentelemetry.io/collector/exporter/loggingexporter
+    gomod: go.opentelemetry.io/collector v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlemanagedprometheusexporter
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlemanagedprometheusexporter v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter v0.57.2
