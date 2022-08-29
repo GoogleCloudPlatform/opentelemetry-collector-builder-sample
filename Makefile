@@ -21,6 +21,8 @@ IMAGE_VERSION=latest
 CONTAINER_REGISTRY=otel-collectors
 REGISTRY_LOCATION=us-central1
 
+OTEL_CONFIG_FILE=./otel-config.yaml
+
 .PHONY: setup
 setup:
 	curl -L -o ${OUTPUT_DIR}/ocb --create-dirs https://github.com/open-telemetry/opentelemetry-collector/releases/download/v${OTEL_VERSION}/ocb_${OTEL_VERSION}_linux_amd64
@@ -48,3 +50,11 @@ cloudbuild-setup:
 .PHONY: cloudbuild
 cloudbuild:
 	gcloud beta builds submit --substitutions=_COLLECTOR_REPO=${CONTAINER_REGISTRY},_COLLECTOR_IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
+
+.PHONY: k8s-config
+k8s-config:
+	kubectl create configmap otel-config --from-file=${OTEL_CONFIG_FILE} -n ${OTEL_NAMESPACE} --save-config
+
+.PHONY: k8s-config-update
+k8s-config-update:
+	kubectl create configmap otel-config --from-file=${OTEL_CONFIG_FILE} -n ${OTEL_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -

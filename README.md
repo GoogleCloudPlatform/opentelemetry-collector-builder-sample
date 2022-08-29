@@ -127,8 +127,19 @@ your desired [configuration](https://opentelemetry.io/docs/collector/configurati
 from it in the namespace you created above:
 
 ```
-kubectl create configmap otel-config --from-file=./otel-config.yaml -n $OTEL_NAMESPACE
+make k8s-config
 ```
+
+(You can point this to a different config file by setting the `OTEL_CONFIG_FILE` environment variable)
+
+To make changes to the OTel ConfigMap, edit your local config file and run:
+
+```
+make k8s-config-update
+```
+
+Note, if the collector pod is already running, it will need to be restarted to pick up any changes
+to the config (this can be done by simply deleting the pod).
 
 ### Build a container image
 
