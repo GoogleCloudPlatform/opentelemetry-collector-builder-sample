@@ -20,7 +20,16 @@ steps:
     waitFor: ["-"]
 
   - name: "gcr.io/cloud-builders/docker"
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/${PROJECT_ID}/${_COLLECTOR_REPO}/${_COLLECTOR_IMAGE}', '.']
+    args:
+      [ "build", "-t", "${_REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_CONTAINER_REGISTRY}/${_COLLECTOR_IMAGE}", "." ]
+    id: BUILD_CONTAINER
+    waitFor:
+      - SETUP_OCB
 
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/${PROJECT_ID}/${_COLLECTOR_REPO}/${_COLLECTOR_IMAGE}']
+substitutions:
+  _REGISTRY_LOCATION: us-central1
+  _CONTAINER_REGISTRY: otel-collectors
+  _COLLECTOR_IMAGE: otelcol-custom
+
+images:
+  - ${_REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_CONTAINER_REGISTRY}/${_COLLECTOR_IMAGE}
