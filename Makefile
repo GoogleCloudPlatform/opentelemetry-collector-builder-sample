@@ -23,13 +23,12 @@ REGISTRY_LOCATION=us-central1
 
 .PHONY: setup
 setup:
-	curl -L -o ${OUTPUT_DIR}/ocb --create-dirs https://github.com/open-telemetry/opentelemetry-collector/releases/download/v${OTEL_VERSION}/ocb_${OTEL_VERSION}_linux_amd64
-	chmod +x ${OUTPUT_DIR}/ocb
-
+	go install go.opentelemetry.io/collector/cmd/builder@v${OTEL_VERSION}
 
 .PHONY: build
 build: setup
-	bin/ocb --config=builder-config.yaml --name=otelcol-custom --output-path=bin/.
+	mkdir -p ${OUTPUT_DIR}
+	builder --config=builder-config.yaml --name=otelcol-custom --output-path=${OUTPUT_DIR}/.
 
 .PHONY: docker-build
 docker-build:
