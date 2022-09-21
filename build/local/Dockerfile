@@ -12,12 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IMAGE_NAME=otelcol-custom
-IMAGE_VERSION=latest
+FROM golang:1.18 as build
+ARG  OTEL_VERSION=0.57.2
+WORKDIR /app
+COPY . .
+RUN go install go.opentelemetry.io/collector/cmd/builder@v${OTEL_VERSION}
+RUN builder --config=builder-config.yaml --name=otelcol-custom --output-path=.
 
-CONTAINER_REGISTRY=otel-collectors
-REGISTRY_LOCATION=us-central1
+FROM gcr.io/distroless/base-debian11
+COPY --from=build /app/otelcol-custom /
+# 4317 - default OTLP receiver
+# 55678 - opencensus (tracing) receiver
+# 55679 - zpages
+EXPOSE 4317/tcp 55678/tcp 55679/tcp
 
-.PHONY: setup-artifact-registry
-setup-artifact-registry:
-	gcloud artifacts repositories create ${CONTAINER_REGISTRY} --repository-format=docker --location=${REGISTRY_LOCATION} --description="Custom build OpenTelemetry collector container registry"
+CMD ["/otelcol-custom"]
