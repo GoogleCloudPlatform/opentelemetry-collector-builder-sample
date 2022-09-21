@@ -13,18 +13,10 @@
 # limitations under the License.
 
 steps:
-  - name: "gcr.io/cloud-builders/go:debian-1.18"
-    script: |
-      make setup
-    id: SETUP_OCB
-    waitFor: ["-"]
-
   - name: "gcr.io/cloud-builders/docker"
     args:
       [ "build", "-t", "${_REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_CONTAINER_REGISTRY}/${_COLLECTOR_IMAGE}", "." ]
     id: BUILD_CONTAINER
-    waitFor:
-      - SETUP_OCB
 
 substitutions:
   _REGISTRY_LOCATION: us-central1

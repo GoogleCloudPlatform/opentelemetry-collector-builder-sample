@@ -13,9 +13,11 @@
 # limitations under the License.
 
 FROM golang:1.18 as build
+ARG  OTEL_VERSION=0.57.2
 WORKDIR /app
 COPY . .
-RUN bin/ocb --config=builder-config.yaml --name=otelcol-custom --output-path=.
+RUN go install go.opentelemetry.io/collector/cmd/builder@v${OTEL_VERSION}
+RUN builder --config=builder-config.yaml --name=otelcol-custom --output-path=.
 
 FROM gcr.io/distroless/base-debian11
 COPY --from=build /app/otelcol-custom /

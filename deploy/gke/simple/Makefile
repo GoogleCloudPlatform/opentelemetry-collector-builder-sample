@@ -12,12 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IMAGE_NAME=otelcol-custom
-IMAGE_VERSION=latest
-
-CONTAINER_REGISTRY=otel-collectors
-REGISTRY_LOCATION=us-central1
-
-.PHONY: setup-artifact-registry
-setup-artifact-registry:
-	gcloud artifacts repositories create ${CONTAINER_REGISTRY} --repository-format=docker --location=${REGISTRY_LOCATION} --description="Custom build OpenTelemetry collector container registry"
+include ../../../Makefile
