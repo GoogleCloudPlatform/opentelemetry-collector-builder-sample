@@ -25,6 +25,8 @@ receivers:
 processors:
   - import: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor
     gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor v0.57.2
   - import: go.opentelemetry.io/collector/processor/memorylimiterprocessor
     gomod: go.opentelemetry.io/collector v0.57.2
   - import: go.opentelemetry.io/collector/processor/batchprocessor
