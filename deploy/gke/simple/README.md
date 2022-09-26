@@ -22,16 +22,15 @@ your desired [configuration](https://opentelemetry.io/docs/collector/configurati
 from it in the namespace you created above:
 
 ```
+cd deploy/gke/simple/
 kubectl create configmap otel-config --from-file=./otel-config.yaml -n $OTEL_NAMESPACE
 ```
 
 ### Create the Deployment
 
-When you built your collector image, the file [`manifest.yaml`](manifest.yaml)
-was automatically updated to reference your image name. Create this manifest in your cluster with:
+Create this manifest in your cluster with:
 
 ```
-cd deploy/gke/simple/
 kubectl apply -f manifest.yaml -n $OTEL_NAMESPACE
 ```
 
