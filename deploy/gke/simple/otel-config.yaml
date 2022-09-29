@@ -74,7 +74,7 @@ exporters:
 
 processors:
   resourcedetection/gke:
-    detectors: [env, gke]
+    detectors: [env, gcp]
     timeout: 2s
     override: false
 
