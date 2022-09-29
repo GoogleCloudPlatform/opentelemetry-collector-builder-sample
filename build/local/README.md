@@ -1,12 +1,8 @@
 ## Prerequisites 
 Prior to following the instructions here, make sure of the following steps to ensure a smooth process - 
- - You should have `go` installed on your machine. You can find the installation instructions for your OS [here](https://go.dev/doc/install). 
-    - Verify the installation by running `go version`.
-    - Add the path to go's installation `bin` folder to your PATH variable. Instructions to do this are also mentioned on the go installation instructions page.  
+ - You should have `go` installed on your machine. You can find the installation instructions for your OS [here](https://go.dev/doc/install).
  - Make sure that you have [docker](https://docs.docker.com/engine/install/) installed on your machine.
     - Also verify that you are able to run docker commands without the need to gain root permissions using sudo. You can follow the [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/) to achieve this.
-    - To verify that the post-installation steps have been completed successfully and that you can run docker without the need for using `sudo`, try running `docker run hello-world`. This command should run successfully now. 
-
 
 ## Building a Collector Binary locally
 
@@ -28,6 +24,8 @@ make setup-artifact-registry
 ```
 This will create an artifact registry with the name `otel-collectors` within your selected Google Cloud project. The name can be changed by updating the `CONTAINER_REGISTRY` variable as explained [here](#customizable-settings).
 
+*You can view the currently selected project by running `gcloud config get project` in a terminal.*
+
 ### Build a Docker Container image locally
 
 Build a docker image with:
@@ -38,11 +36,9 @@ make docker-build
 
 ## Push your Docker Container Image to the [Artifact Registry](https://cloud.google.com/artifact-registry)
 
-Set `$GCLOUD_PROJECT` with the name of your Google Cloud project to tag and push the resulting image.
 Note: you will need an existing registry for this to work, that was created as part of the [prequisites](#prerequisite-setup-an-artifact-registry).
 
 ```
-export GCLOUD_PROJECT=<name of you GCP project>
 make docker-push
 ```
 
