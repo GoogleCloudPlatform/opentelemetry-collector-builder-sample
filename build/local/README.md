@@ -49,7 +49,6 @@ make docker-push
  - The preferred location can be modified by updating the Makefile ([explained below](#Customizable-settings)).
  - If you are unsure about what should be `<your-artifact-registry>`, you can also find the exact command to run from Google Cloud console. Navigate to the Artifact Registry product page within your selected project, select the artifact registry you created and click **Setup Instructions** button. The popup should have the exact  command that you need to run to authenticate docker. 
 
-
 #### Customizable settings  
 
 You can customize these build steps by setting the following environment variables defined in the [Makefile](../../Makefile):
