@@ -79,6 +79,9 @@ processors:
     override: false
 
   memory_limiter:
+    check_interval: 1s
+    limit_percentage: 65
+    spike_limit_percentage: 20
   batch:
     send_batch_max_size: 200
     send_batch_size: 200
