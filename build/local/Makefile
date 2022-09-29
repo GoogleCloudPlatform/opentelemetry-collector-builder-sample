@@ -16,6 +16,7 @@ include ../../Makefile
 
 OUTPUT_DIR=bin
 OTEL_VERSION=0.57.2
+GCLOUD_PROJECT ?= $(shell gcloud config get project)
 
 .PHONY: setup
 setup:
