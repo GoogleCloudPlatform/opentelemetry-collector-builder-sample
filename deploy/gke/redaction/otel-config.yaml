@@ -31,7 +31,7 @@ exporters:
 processors:
   # The resourcedetection processor can detect information about our GKE cluster.
   resourcedetection/gke:
-    detectors: [env, gke]
+    detectors: [env, gcp]
     timeout: 2s
     override: false
 
