@@ -59,6 +59,6 @@ service:
   pipelines:
     # This sample sets up a pipeline for traces.  It includes the redaction/credit_cards to mask credit cards.
     traces:
-      receivers: [otlp, otlpjsonfile/testdata]
+      receivers: [otlp]
       processors: [memory_limiter, batch, resourcedetection/gke, redaction/credit_cards]
       exporters: [googlecloud, logging]

@@ -60,13 +60,8 @@ spec:
         volumeMounts:
         - name: otel-collector-config-vol
           mountPath: /conf
-        - name: testdata
-          mountPath: /testdata
       serviceAccountName: otel-collector
       volumes:
         - configMap:
             name: otel-config
           name: otel-collector-config-vol
-        - configMap:
-            name: testdata
-          name: testdata
