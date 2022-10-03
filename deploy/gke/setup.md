@@ -1,7 +1,7 @@
 
 ## Setup
 
-* A built and pushed collector container image.  See [Building a Collector Image Locally](../../../build/local/) for instructions for a local build.
+* A built and pushed collector container image.  See [Building a Collector Image Locally](../../build/local/) for instructions for a local build.
 * A GCP project with billing enabled
 * A running GKE cluster
 * Artifact Registry enabled in your GCP project
