@@ -1,5 +1,13 @@
 ## Troubleshooting deployment on GKE
 
+### Cluster running but not seeing metrics on Google Cloud Console
+
+If your cluster deployment is working fine, meaning all your pods are in a running state and `kubectl describe` does not show any issues, you can try running un `kubectl logs <pod_name> -n $OTEL_NAMESPACE` to figure out the exact cause for telemetry data not being exported to Google Cloud. 
+
+Running this command will also show you if the telemetry data is being printed locally within the pod container. If not, then there might be an issue with the OpenTelemetry Collector configuration. This is likely if you udpated/modified the collector configuration. 
+
+If the telemetry data is being printed locally, then most likely it is a permissions issue. You can verify this by looking at the errors within the logs. If this is the case, try following the steps mentioned in the below section - [Permission errors exporting telemetry](#permission-errors-exporting-telemetry).
+
 ### Permission errors exporting telemetry
 
 If the collector pod fails to export metrics/logs/traces to GCP, it may need to be authorized
@@ -14,7 +22,7 @@ to identify it as the Workload Identity account.
 If you don't already have one, create a GCP service account to authorize the collector to send metrics, traces, and logs:
 
 ```
-export GCLOUD_PROJECT=<the project ID of the Google Cloud project of your IAM service account>
+export GCLOUD_PROJECT=<the Google Cloud project ID to which your IAM service account belongs>
 export PROJECT_ID=<your Google Cloud project ID>
 gcloud iam service-accounts create otel-collector --project=${GCLOUD_PROJECT}
 ```

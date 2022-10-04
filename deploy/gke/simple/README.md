@@ -50,7 +50,7 @@ If the pods are not running, try using `kubectl describe` on the failing pods to
 
 You can also use `kubectl logs` to check the logs of the failing pod containers to pinpoint the cause. 
 
-The [Troubleshooting](../troubleshooting.md) guide for more information on some of the most common issues such as authentication related issues. 
+The [troubleshooting](../troubleshooting.md) guide for more information on some of the most common issues such as authentication related issues. 
 
 ### Expected Outcome after Running this Sample
 
@@ -63,12 +63,9 @@ Since there is no application currently running on the cluster, the collector is
 
  There are many metrics that are emitted from the OpenTelemetry collector itself and most of these metrics start with the prefix `Otelcol` and you can search for this string in metrics explorer. 
 
-#### Potential Issues 
-If you are not seeing metrics on Google Cloud, first run `kubectl logs <pod_name> -n $OTEL_NAMESPACE` to verify that they are being printed locally within the pod container and if any error/issue is being reported while exporting metrics to Google Cloud. 
-
-Most likely, this issue is due to permission errors. Try following the troubleshooting steps mentioned here - [Permission errors exporting telemetry](../troubleshooting.md#permission-errors-exporting-telemetry).
-
 *NOTE: You can chnage the configuration for the OpenTelemetry Collector to alter its behaviour.*
+
+In case you are not seeing the expected outcome or are running into errors, look at the [troubleshooting](../troubleshooting.md) guide for more information.
 
 ### (Optional) Cleanup
 
