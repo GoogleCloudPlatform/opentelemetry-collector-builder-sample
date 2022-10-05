@@ -1,5 +1,13 @@
 ## Troubleshooting deployment on GKE
 
+### Cluster running but not seeing metrics on Google Cloud Console
+
+If your cluster deployment is working fine, meaning all your pods are in a running state and `kubectl describe` does not show any issues, you can try running un `kubectl logs <pod_name> -n $OTEL_NAMESPACE` to figure out the exact cause for telemetry data not being exported to Google Cloud. 
+
+Running this command will also show you if the telemetry data is being printed locally within the pod container. If not, then there might be an issue with the OpenTelemetry Collector configuration. This is likely if you udpated/modified the collector configuration. 
+
+If the telemetry data is being printed locally, then most likely it is a permissions issue. You can verify this by looking at the errors within the logs. If this is the case, try following the steps mentioned in the below section - [Permission errors exporting telemetry](#permission-errors-exporting-telemetry).
+
 ### Permission errors exporting telemetry
 
 If the collector pod fails to export metrics/logs/traces to GCP, it may need to be authorized
@@ -14,10 +22,12 @@ to identify it as the Workload Identity account.
 If you don't already have one, create a GCP service account to authorize the collector to send metrics, traces, and logs:
 
 ```
-export GCLOUD_PROJECT=<your GCP project>
+export GCLOUD_PROJECT=<the Google Cloud project ID to which your IAM service account belongs>
 export PROJECT_ID=<your Google Cloud project ID>
 gcloud iam service-accounts create otel-collector --project=${GCLOUD_PROJECT}
 ```
+
+**NOTE:** *If your GKE cluster and your service account are created in the same GCP project, then `GCLOUD_PROJECT` & `PROJECT_ID` will be the same.*
 
 Give the service account access to write metrics, traces, and logs (or more/fewer roles based on your config):
 
@@ -52,8 +62,16 @@ kubectl annotate serviceaccount otel-collector \
     iam.gke.io/gcp-service-account=GSA_NAME@GSA_PROJECT.iam.gserviceaccount.com
 ```
 
+In the above,
+- GSA_NAME: the name of your IAM service account.
+- GSA_PROJECT: this is the GCP project to which the IAM service account belongs.
+
+Essetially, `iam.gke.io/gcp-service-account` should contain the email of the service account you created using `gcloud iam service-accounts create` command in the beginning.
+
+*Note that most of the steps in the above link to GCP documentation, like **creating a new namespace** would have already been done as part of running this sample (We will be using the same `$OTEL_NAMESPACE`).*
+
 Following this, the collector pod will need to be restarted to take advantage of the new permissions.
-You can do this by simply deleting it with `kubectl delete pod/otel-collector-<POD_NAME>`.
+You can do this by simply deleting it with `kubectl delete pod/otel-collector-<POD_NAME> -n $OTEL_NAMESPACE`.
 
 #### (Cleanup) Remove gcloud service account and bindings
 ```
@@ -100,6 +118,7 @@ For example, if you are using `gcr.io` in `us` with the account from above:
 ```
 gcloud artifacts repositories add-iam-policy-binding gcr.io \
     --location=us \
-    --member=123456789123-compute@developer.gserviceaccount.com \
+    --member=serviceAccount:123456789123-compute@developer.gserviceaccount.com \
     --role="roles/artifactregistry.reader"
 ```
+NOTE: If you followed the **default values** in this sample and are using Artifact Registry, `gcr.io` should be replaced with `otel-collectors` *(name of the repository)* and `us` would be `us-central1` *(location of the repository)*.
