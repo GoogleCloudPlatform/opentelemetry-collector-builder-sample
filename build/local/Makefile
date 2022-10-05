@@ -31,6 +31,7 @@ build: setup
 docker-build: setup
 	docker build -t ${IMAGE_NAME}:${IMAGE_VERSION} .
 	sed -i "s/%OTEL_COLLECTOR_IMAGE%/${REGISTRY_LOCATION}-docker.pkg.dev\/${GCLOUD_PROJECT}\/${CONTAINER_REGISTRY}\/${IMAGE_NAME}:${IMAGE_VERSION}/g" ../../deploy/gke/simple/manifest.yaml
+	sed -i "s/%OTEL_COLLECTOR_IMAGE%/${REGISTRY_LOCATION}-docker.pkg.dev\/${GCLOUD_PROJECT}\/${CONTAINER_REGISTRY}\/${IMAGE_NAME}:${IMAGE_VERSION}/g" ../../deploy/gke/redaction/manifest.yaml
 
 .PHONY: docker-push
 docker-push:
