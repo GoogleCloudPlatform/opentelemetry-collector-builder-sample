@@ -52,7 +52,7 @@ You can also use `kubectl logs` to check the logs of the failing pod containers 
 
 The [troubleshooting](../troubleshooting.md) guide for more information on some of the most common issues such as authentication related issues. 
 
-### Expected Outcome after Running this Sample
+### Expected Outcome after running this sample
 
 After a successful deployment of this sample, what we have is a GKE cluster on which we have a OpenTelemetry collector running. The collector is configured using the [otel-config](./otel-config.yaml) file. 
 
