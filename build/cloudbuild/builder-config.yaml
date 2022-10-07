@@ -21,6 +21,8 @@ receivers:
     gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/googlecloudspannerreceiver v0.57.2
   - import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver
     gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/otlpjsonfilereceiver
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/otlpjsonfilereceiver v0.57.2
 
 processors:
   - import: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor
