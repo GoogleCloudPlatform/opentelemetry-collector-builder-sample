@@ -69,3 +69,104 @@ When you are done, you can clean up everything you've done with the following st
 ```
 kubectl delete namespace $OTEL_NAMESPACE
 ```
+
+## Try it out yourself (Optional)
+
+This section contains steps that you can follow to actually see redaction you setup earlier in action. Since there is no expected outcome from our kubernetes deployment due to a lack of telemetry data, the redaction processor setup in our collector cofiguration is not applied to anything. In this section we will introduce a source of telemetry data to actually see the redaction in action.  
+
+### Prerequisites 
+You should be able to follow all steps mentioned in this README till [Verify the Deployment](#verify-the-deployment) successfully. This ensures that there are no permissions issues and you are able to succeesfully run a GKE cluster and connect to it. 
+
+### Source of telemetry data
+
+We would be using JSON files containing telemetry data in OTLP format as the source of telemetry data. A sample file has been provided here - [testdata.json](./otlp-data/testdata.json). The collector running in the cluster would read this file and treat the data in this file as if it were coming from a running application. 
+
+### Updating the collector configuration to receive data from JSON file
+
+Next, we would update our collector configuration file - [otel-config.yaml](./otel-config.yaml) to add a reciever that is able to receive telemetry data from the added JSON file. 
+
+Under the `receivers` section in the config file, add the following configuration - 
+
+```
+  otlpjsonfile:
+    start_at: "beginning"
+    include:
+      - "/mnt/testdata/*.json"
+
+```
+For more details about this particular receiver, check [otlpjsonfilereceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/otlpjsonfilereceiver).
+
+***NOTE:** The path in `include` points to where the file would be mounted within the kubernetes cluster environment and is therefore different from where it is present on your local machine. More information on this in [the next section](#making-the-json-file-available-within-the-cluster).*
+
+Next, add this receiver in the traces pipeline, so your trace pipeline looks like - 
+```
+ traces:
+      receivers: [otlp, otlpjsonfile]
+      processors: [memory_limiter, batch, resourcedetection/gke, redaction/credit_cards]
+      exporters: [googlecloud, logging]
+```
+ 
+### Making the JSON file available within the cluster 
+
+Simply adding the JSON file within the directory does not grant the running cluster the access to this file. In order to get access to this file within the kubernetes environment, we would be mounting this file as a kubernetes `configMap` for a new deployment - 
+
+1. Make sure that there are no current deployments by running `kubectl get deployments -n $OTEL_NAMESPACE`. If there are active deployments, delete them using `kubectl delete`. 
+2. Since we also updated our collector configuration, we will need to recreate the `otel-config` configMap too. Delete the old configMaps, if any before proceeding. 
+    - To delete configMaps, you can use `kubectl delete configmaps <configMap name> -n $OTEL_NAMESPACE`. 
+3. Recreate `otel-config` configMap with the updated configuration - `kubectl create configmap otel-config --from-file=./otel-config.yaml -n $OTEL_NAMESPACE`. 
+4. Create a new configMap `otlp-test-data` - this would be used to mount our test data in the kubernetes cluster as a volume - `kubectl create configmap otlp-test-data --from-file=./otlp-data/testdata.json -n $OTEL_NAMESPACE`. 
+5. Update the [manifest.yaml](./manifest.yaml) to add `volume` and `volumeMount` configuration for the newly created configMap - `otlp-test-data`. 
+   - Update the `spec.volumes` section to add a new `configMap` entry  
+        ```
+        - configMap:
+                name: otlp-test-data
+            name: test-data-vol   # This could be changed to anything
+        ```
+   - Update the `spec.containers.volumeMounts` section to configure a new volumeMount for the added volume. 
+        ```
+            - name: test-data-vol  # This name should match to the name of volume in spec.volumes
+                mountPath: /mnt/testdata   # This is the location in the kubernetes environment where the file for configMap will be mounted
+        ```
+6. Deploy the cluster using the new deployment manifest - `kubectl apply -f manifest.yaml -n $OTEL_NAMESPACE`.
+7. Verify if the file is available within the cluster at the mount path specified. This can be done by getting into the running pods within the cluster.
+    - `kubectl exec -n $OTEL_NAMESPACE -it <pod_container_name> -- cat /mnt/testdata/testdata.json` - should show the contents of the file
+    - You can get the pod name using `kubectl get pods -n $OTEL_NAMESPACE `
+
+*If the file is not found, make sure that you have followed all the steps, you can also use `kubectl logs` to get logs to the container and see if there is a problem.*
+
+### Seeing the redacted traces
+
+At this point, we have a file acting as telemetry data source and a receiver configured within the OpenTelemetry Collector that listens to this file whenever an update to this is made. The collector also receives telemetry data from this file once when it is initially addedd (mounted). 
+
+So there should already be a trace emitted which should have been caught by the Collector. The current collector configuration has 2 exporters configured to where these traces would be exported -  
+ 1. `googlecloud`
+     - You can log into your Google Cloud console and then use [Trace List](https://console.cloud.google.com/traces/list) to look for traces. You can also search by trace ID which can be found in the sample data file - [testdata.json](./otlp-data/testdata.json). 
+ 2. `logging` 
+     - You can view the trace data on stdout for the pod container, run `kubectl logs <pod_container_name> -n $OTEL_NAMESPACE`. 
+
+In the outputs, notice the trace attribute - `credit.card.number`, you will notice that this data has been redacted - the actual card number is now replaced with `****` in traces. 
+
+You can repeat the entire process described here with the `redaction/credit_cards` processor removed from the trace pipeline in [`otel-config`](./otel-config.yaml) and see that without this processor, the actual credit card numbers appear in traces. 
+
+### Making a change to the telemetry data (Optional)
+
+You might want to update the telemetry data being recieved by the collector to add new traces, update traceIDs or any other attributes. To do this you need to make a change to the configMap that is created from our test data file. To do this, you need to -
+1. Update the telemetry data in [testdata.json](./otlp-data/testdata.json). Make sure that JSON here is **not** pretty printed and remains minified. 
+2. Update the `otlp-test-data` configMap - 
+    ```
+    kubectl create configmap otlp-test-data --from-file=./otlp-data/testdata.json -n $OTEL_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+    ```
+
+**NOTE**: It may take some time *(usually a few seconds)* for the config file to be updated.
+
+To check if configMap is updated - 
+```
+ kubectl describe configmaps otlp-test-data -n $OTEL_NAMESPACE 
+```
+
+To check if the test file at mount path is updated - 
+```
+ kubectl exec -n $OTEL_NAMESPACE -it  <pod_container_name> -- cat /mnt/testdata/testdata.json 
+```
+
+Once you see your changes are reflected in the file at mount path, you should notice that a new trace is recieved by the collector with the updated changes. 
