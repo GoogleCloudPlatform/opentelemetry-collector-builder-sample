@@ -83,7 +83,6 @@ Under the `receivers` section in the config file, add the following configuratio
     start_at: "beginning"
     include:
       - "/mnt/testdata/*.json"
-
 ```
 For more details about this particular receiver, check [otlpjsonfilereceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/otlpjsonfilereceiver).
 
