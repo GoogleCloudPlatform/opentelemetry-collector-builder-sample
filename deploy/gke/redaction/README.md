@@ -70,11 +70,11 @@ You should be able to follow all steps mentioned in this README up to [Verify th
 
 ### Source of telemetry data
 
-This example uses JSON files containing telemetry data in OTLP format as the source of telemetry data. A sample file has been provided here - [testdata.json](./otlp-data/testdata.json). The collector running in the cluster would read this file and treat the data in this file as if it is coming from a running application. 
+This example uses JSON files containing telemetry data in OTLP format as the source of telemetry data. A sample file has been provided here - [testdata.json](./otlp-data/testdata.json). The collector running in the cluster will read this file and treat the data in it as if it is coming from a running application. 
 
 ### Updating the collector configuration to receive data from JSON file
 
-Next, we would update our collector configuration file - [otel-config.yaml](./otel-config.yaml) to add a reciever that is able to receive telemetry data from the added JSON file. 
+Next, we will update our collector configuration file - [otel-config.yaml](./otel-config.yaml) to add a reciever that is able to receive telemetry data from the added JSON file. 
 
 Under the `receivers` section in the config file, add the following configuration - 
 
@@ -86,7 +86,7 @@ Under the `receivers` section in the config file, add the following configuratio
 ```
 For more details about this particular receiver, check [otlpjsonfilereceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/otlpjsonfilereceiver).
 
-***NOTE:** The path in `include` points to where the file would be mounted within the Kubernetes cluster environment and is therefore different from where it is present on your local machine. More information on this in [the next section](#making-the-json-file-available-within-the-cluster).*
+***NOTE:** The path in `include` points to where the file will be mounted within the Kubernetes cluster environment and is therefore different from where it is present on your local machine. More information on this in [the next section](#making-the-json-file-available-within-the-cluster).*
 
 Next, add this receiver in the traces pipeline, so your trace pipeline looks like - 
 ```
@@ -99,7 +99,7 @@ Next, add this receiver in the traces pipeline, so your trace pipeline looks lik
  
 ### Making the JSON file available within the cluster 
 
-Simply adding the JSON file within the directory does not grant the running cluster the access to this file. In order to get access to this file within the Kubernetes environment, we would be mounting this file as a Kubernetes `ConfigMap` for a new deployment - 
+Simply adding the JSON file within the directory does not grant the running cluster the access to this file. In order to get access to this file within the Kubernetes environment, we will mount this file as a Kubernetes `ConfigMap` for a new deployment - 
 
 1. Make sure that there are no current deployments by running `kubectl get deployments -n $OTEL_NAMESPACE`. If there are active deployments, delete them using `kubectl delete`. 
 2. Since we also updated our collector configuration, we will need to recreate the `otel-config` ConfigMap too. Delete the old ConfigMaps, if any before proceeding. 
