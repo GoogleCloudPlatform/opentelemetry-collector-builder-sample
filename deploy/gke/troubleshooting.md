@@ -122,3 +122,43 @@ gcloud artifacts repositories add-iam-policy-binding gcr.io \
     --role="roles/artifactregistry.reader"
 ```
 NOTE: If you followed the **default values** in this sample and are using Artifact Registry, `gcr.io` should be replaced with `otel-collectors` *(name of the repository)* and `us` would be `us-central1` *(location of the repository)*.
+
+### Verify updates to files/ConfigMaps in Kubernetes cluster 
+
+If you made an update to the Kubernetes ConfigMap and want to verify if the map is updated, you can run - 
+
+```
+kubectl describe <ConfigMap> -n $OTEL_NAMESPACE
+```
+*In case you have a different namespace, replace $OTEL_NAMESPACE with the name of that namespace.*
+
+If you wish to verify that the file from which the map is created, is updated within the Kubernetes environment after updating the file locally and updating ConfigMap, you would need to get access to the shell of the running pod. 
+
+Docker images for the examples in this repository are extemely minimal and do not contain the bash shell by default. To access the running pod's shell you would need to add these utilities to the Docker image of the OpenTelemetry Collector that you build & deploy. 
+
+You would need the `sh` utility to access shell and `cat` utility - to view the contents of the file and to know if the file exists. 
+Update the Dockerfile for the OpenTelemetry Collector image by adding the following lines - 
+
+```
+FROM busybox:1.35.0-uclibc as busybox
+COPY --from=busybox /bin/sh /bin/sh   # copies the sh utility from busybox and puts it on /bin/sh
+COPY --from=busybox /bin/cat /bin/cat # copies the cat utility from busybox and puts it on /bin/cat
+``` 
+
+Now the image built from this updated Dockerfile will have a shell access and the `cat` command available *(Simply installing the `sh` shell does not install all commands that typically come with the bash shell).* 
+If you need more linux commands like `ls`, `mkdir`, etc. for debugging purposes, you can copy them from busybox in similar fashion. 
+
+After building the image by following the same steps in `build/local` or `build/cloudbuild`, you need to redeploy the image to you GKE cluster using `kubectl apply -f manifest.yaml -n $OTEL_NAMESPACE`. 
+
+To get shell access for the pod, run - 
+```
+kubectl exec -n $OTEL_NAMESPACE -it pod_container_name -- sh
+```
+
+To check the contents of a mounted file, run - 
+```
+kubectl exec -n $OTEL_NAMESPACE -it pod_container_name -- cat file_mount_path
+```
+In the above, 
+ - `pod_container_name` is the name of the running pod. You can get the pod name using - `kubectl get pods -n $OTEL_NAMESPACE`.
+ - `file_mount_path` is the path you configured in Kubernetes deployment in the `volumeMounts` section, for instance, for the redaction sample, this would be - `/mnt/testdata`. 
