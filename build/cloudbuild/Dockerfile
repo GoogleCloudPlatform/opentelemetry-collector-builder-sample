@@ -1,3 +1,4 @@
+
 # Copyright 2022 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,12 +20,8 @@ COPY . .
 RUN go install go.opentelemetry.io/collector/cmd/builder@v${OTEL_VERSION}
 RUN builder --config=builder-config.yaml --name=otelcol-custom --output-path=.
 
-FROM busybox:1.35.0-uclibc as busybox
 FROM gcr.io/distroless/base-debian11
 COPY --from=build /app/otelcol-custom /
-COPY --from=busybox /bin/sh /bin/sh
-COPY --from=busybox /bin/cat /bin/cat
-
 # 4317 - default OTLP receiver
 # 55678 - opencensus (tracing) receiver
 # 55679 - zpages
