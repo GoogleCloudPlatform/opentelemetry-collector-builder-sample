@@ -201,7 +201,7 @@ Simply adding the JSON files within the directory does not grant the running clu
 
 ### Seeing the telemetry data
 
-At this point, we have several files acting as sources of telemetry data and a reciever configured withing the OpenTelemetry Collector that listens to these files whenever there are updates made to them. The collector also receives telemetry data from the files once when they are initially addedd (mounted).
+At this point, we have several files acting as sources of telemetry data and a receiver configured within the OpenTelemetry Collector that listens to these files whenever there are updates made to them. The collector also receives telemetry data from the files once when they are initially mounted.
 
 So there should already be telemetry data emitted which should have been caught by the Collector. The current collector configuration has 2 exporters configured to where these traces will be exported -  
 1. `googlecloud`
