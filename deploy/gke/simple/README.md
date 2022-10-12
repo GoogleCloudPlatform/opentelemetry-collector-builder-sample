@@ -77,6 +77,22 @@ You should be able to follow all steps mentioned in this README till [Verify the
 
 The example uses JSON file(s) containing telemetry data in OTLP format as source of telemetry data. These files can contain metrics, traces or logs - but each file should contain only a single type of telemetry data. Sample files have been provided in the folder - [otlp-data](./otlp-data/). The collector running in the cluster will then read these files and treat the data in them as if it were coming from a running application. 
 
+Before continuing, update the JSON files within the otlp-data folder with recent timestamps. This is done so that the telemetry data exported by the collector is recent enough to show up in Google Cloud console -
+
+```
+# Update logs JSON file
+make update-timestamp-logs
+
+# Update metrics JSON file
+make update-timestamp-metrics
+
+# Update traces JSON file
+make update-timestamp-traces
+
+# Shortcut command to update all the files
+make update-timestamp-all
+```
+
 ### Updating the collector configuration to receive data from JSON file
 
 We need to update the collector configuration [otel-config.yaml](./otel-config.yaml) file to add a reciever that is able to receive telemetry data from the added JSON file.

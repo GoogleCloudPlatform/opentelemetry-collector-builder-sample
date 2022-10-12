@@ -13,3 +13,24 @@
 # limitations under the License.
 
 include ../../../Makefile
+
+define update-timestamp
+	sed -i "s/%START_TIMESTAMP%/$$(date +%s)000000000/g" $(1)
+	sed -i "s/%MIDDLE_TIMESTAMP%/$$(date +%s)000056783/g" $(1)
+	sed -i "s/%END_TIMESTAMP%/$$(date +%s)000081234/g" $(1)
+endef
+
+.PHONY: udpate-timestamp-logs
+update-timestamp-logs:
+	$(call update-timestamp, ./otlp-data/testdata-logs.json)
+
+.PHONY: udpate-timestamp-metrics
+update-timestamp-metrics:
+	$(call update-timestamp, ./otlp-data/testdata-metrics.json)
+
+.PHONY: udpate-timestamp-traces
+update-timestamp-traces:
+	$(call update-timestamp, ./otlp-data/testdata-traces.json)
+
+.PHONY: udpate-timestamp-all
+update-timestamp-all: update-timestamp-logs update-timestamp-metrics update-timestamp-traces
