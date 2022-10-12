@@ -182,7 +182,7 @@ Simply adding the JSON files within the directory does not grant the running clu
         - name: test-data-vol-logs  # This name should match to the name of volume in spec.volumes
           mountPath: /mnt/testdata/logs   # This is the location in the kubernetes environment where the file for configMap for logs will be mounted
         ```
-6. Deploy the cluster using the new deployment manifest - 
+6. Deploy the collector using the new deployment manifest - 
     ```
     kubectl apply -f manifest.yaml -n $OTEL_NAMESPACE
     ```
