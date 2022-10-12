@@ -195,7 +195,7 @@ Simply adding the JSON files within the directory does not grant the running clu
     kubectl logs <pod_container_name> -n $OTEL_NAMESPACE
     ```
 
-*If the logs do not show the expected telemetry data, check if the file used to send json data - [testdata.json](./otlp-data/testdata.json) is found in the Kubernetes deployment. Follow steps in [troubleshooting guide](../troubleshooting.md#verify-updates-to-filesconfigmaps-in-kubernetes-cluster) to verify file presence and contents.*
+*In case there are issues, follow steps in [troubleshooting guide](../troubleshooting.md#verify-updates-to-filesconfigmaps-in-kubernetes-cluster) to verify file presence and contents of testdata files in the cluster.*
 
 **NOTE: You will need to update the timestamps in [testdata-metrics](./otlp-data/testdata-metrics.json) to be within 24 hours of current time otherwise the metrics will not show up in Google Cloud console's Metrics Explorer. You might also need to update timestamps in other testdata - metrics and logs in case they become old enough to not be recognized by Google Cloud.**
 
@@ -218,19 +218,12 @@ You might want to update the telemetry data being recieved by the collector to a
     kubectl create configmap otlp-test-data-traces --from-file=./otlp-data/testdata-traces.json -n $OTEL_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
     ```
 
-**NOTE**: It may take some time *(usually a few seconds)* for the config file to be updated.
-
 To check if ConfigMap is updated, use following command with desired ConfigMap name - 
 ```
  kubectl describe configmaps otlp-test-data-traces -n $OTEL_NAMESPACE 
 ```
 
-To check if the test file at mount path is updated, use following command with correct file path - 
-```
- kubectl exec -n $OTEL_NAMESPACE -it  <pod_container_name> -- cat /mnt/testdata/traces/testdata-traces.json 
-```
-
-Once you see your changes are reflected in the file at mount path, you should notice that a new trace is recieved by the collector with the updated changes. 
+**NOTE**: It may take some time *(usually a few seconds)* for the config file to be updated. Once the file(s) are updated within the cluster, changes in the telemetry output would be visible on all configured exporters. If they are not visible after some time, follow steps in follow steps in [troubleshooting guide](../troubleshooting.md#verify-updates-to-filesconfigmaps-in-kubernetes-cluster) to verify the contents of the files(s).
 
 ### (Optional) Cleanup
 
