@@ -79,7 +79,7 @@ The example uses JSON file(s) containing telemetry data in OTLP format as source
 
 ### Updating the collector configuration to receive data from JSON file
 
-We need to update the collector configuration file - [otel-config](./otel-config.yaml) to add a reciever that is able to receive telemetry data from the added JSON file.
+We need to update the collector configuration [otel-config.yaml](./otel-config.yaml) file to add a reciever that is able to receive telemetry data from the added JSON file.
 
 Under the `receivers` section in the config file, add the following configuration - 
 
