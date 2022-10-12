@@ -135,7 +135,6 @@ Add the following configuration to the `googlecloud` exporter -
 
 ```
   googlecloud:
-    project: otel-test # Replace this with your Google Cloud Project ID
     retry_on_failure:
       enabled: false
     log:
