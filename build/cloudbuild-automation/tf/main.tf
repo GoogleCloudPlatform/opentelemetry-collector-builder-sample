@@ -17,7 +17,7 @@ provider "google" {
 # Create the artifact registry where the custom collector images will be published 
 # This does the exact same thing as done by setup-artifact-registry target in the root Makefile 
 resource "google_artifact_registry_repository" "my-repo" {
-  provider = google
+  provider      = google
   location      = var.registry_location
   repository_id = var.container_registry
   description   = "Custom build OpenTelemetry collector container registry"
@@ -31,13 +31,11 @@ resource "google_cloudbuild_trigger" "build_image" {
   github {
     name  = var.repository
     owner = var.owner
-    # TODO : Update this to push once working is verified
-    pull_request {
-      branch          = "^${var.tracked_branch}$"
-      comment_control = "COMMENTS_ENABLED_FOR_EXTERNAL_CONTRIBUTORS_ONLY"
+    push {
+      branch = "^${var.tracked_branch}$"
     }
   }
-  name = "build-${var.repository}-image" # name of the build trigger
+  name = "build-${var.repository}-image" # name of the build trigger, could be changed to any other string
   tags = [
     "build"
   ]
@@ -51,7 +49,7 @@ variable "project_id" {
 # Variables used by the generated Google Cloud build trigger
 
 variable "owner" {
-    type = string
+    type        = string
     description = "The owner of the GitHub repository for e.g. GoogleCloudPlatform"
 }
 
@@ -69,11 +67,11 @@ variable "tracked_branch" {
 # Variables used in creating the artifact registry 
 
 variable "container_registry" {
-    type = string
+    type        = string
     description = "The name of the artifact repository that needs to be set up."
 }
 
 variable "registry_location" {
-    type = string
+    type        = string
     description = "The location where artifact repository will be present, for e.g us-central1"
 }

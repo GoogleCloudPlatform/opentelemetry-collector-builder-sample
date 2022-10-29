@@ -1,6 +1,8 @@
 steps:
   - name: "gcr.io/cloud-builders/docker"
     args:
+      # CloudBuild executes this command within a working dir that is in the root of the repository, this means the Dockerfile's directory would be 
+      # the path from the root of the repository.
       [ "build", "-t", "${_REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_CONTAINER_REGISTRY}/${_COLLECTOR_IMAGE}", "build/cloudbuild-automation"]
     id: BUILD_CONTAINER
 
