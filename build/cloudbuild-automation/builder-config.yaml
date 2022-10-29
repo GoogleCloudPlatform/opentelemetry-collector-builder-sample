@@ -1,0 +1,45 @@
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+receivers:
+  - import: go.opentelemetry.io/collector/receiver/otlpreceiver
+    gomod: go.opentelemetry.io/collector v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/googlecloudpubsubreceiver
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/googlecloudpubsubreceiver v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/googlecloudspannerreceiver
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/googlecloudspannerreceiver v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/prometheusreceiver v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/otlpjsonfilereceiver
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/receiver/otlpjsonfilereceiver v0.57.2
+
+processors:
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/resourcedetectionprocessor v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/processor/redactionprocessor v0.57.2
+  - import: go.opentelemetry.io/collector/processor/memorylimiterprocessor
+    gomod: go.opentelemetry.io/collector v0.57.2
+  - import: go.opentelemetry.io/collector/processor/batchprocessor
+    gomod: go.opentelemetry.io/collector v0.57.2
+
+exporters:
+  - import: go.opentelemetry.io/collector/exporter/loggingexporter
+    gomod: go.opentelemetry.io/collector v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudexporter v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlemanagedprometheusexporter
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlemanagedprometheusexporter v0.57.2
+  - import: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter
+    gomod: github.com/open-telemetry/opentelemetry-collector-contrib/exporter/googlecloudpubsubexporter v0.57.2

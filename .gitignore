@@ -1,1 +1,3 @@
 build/local/bin/
+build/cloudbuild-automation/tf/*.terraform*
+build/cloudbuild-automation/tf/terraform.*

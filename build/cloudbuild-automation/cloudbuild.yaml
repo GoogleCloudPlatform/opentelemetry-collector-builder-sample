@@ -1,0 +1,13 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [ "build", "-t", "${_REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_CONTAINER_REGISTRY}/${_COLLECTOR_IMAGE}", "build/cloudbuild-automation"]
+    id: BUILD_CONTAINER
+
+substitutions:
+  _REGISTRY_LOCATION: us-central1
+  _CONTAINER_REGISTRY: otel-collectors
+  _COLLECTOR_IMAGE: otelcol-custom
+
+images:
+  - ${_REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_CONTAINER_REGISTRY}/${_COLLECTOR_IMAGE}
