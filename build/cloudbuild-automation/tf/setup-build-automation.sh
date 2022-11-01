@@ -1,5 +1,5 @@
 #!/bin/sh
-CONTAINER_REGISTRY="otel-collectors-test" # This can be changed to any name you want
+CONTAINER_REGISTRY="otel-collectors" # This can be changed to any name you want
 REGISTRY_LOCATION="us-central1" # This can be changed to any region you want
 REPOSITORY_NAME="opentelemetry-collector-builder-sample" # Replace it with the name of your repository
 REPOSITORY_OWNER="GoogleCloudPlatform" # Replace this with the name of owner of the repository
