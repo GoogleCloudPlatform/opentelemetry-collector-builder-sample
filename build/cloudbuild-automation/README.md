@@ -30,27 +30,9 @@ After you have followed instructions in this README, you will have the following
 3. `builder-config.yaml` - configuration defining how to build the custom opentelemetry collector. 
 4. `cloudbuild.yaml` - the YAML file containing steps that need to be run in cloud build. The cloudbuild trigger uses this file to build the docker image for the opentelemetry custom collector.
 
-### Setting up the automation
-
-1. Connect the GitHub repository for which you wish to setup the automated cloud builds with your GCP project. Look at [Connecting your repository to GCP account](#connecting-your-repository-to-gcp-account) section for the steps. 
-2. Assuming you are in the root of the repository, move to the terraform folder containing the script - 
-    ```
-    cd build/cloudbuild-automation/tf
-    ``` 
-3. Modify the variables declared at the top in `setup-build-automation.sh` script to suit your needs. 
-4. Run the `setup-build-automation.sh` script. 
-    ```
-    ./setup-build-automation.sh
-    ```
-5. Upon running the script, terraform will initialize and will generate a few files in the current directory.
-6. After running the script successfuly and connecting your repository, you will have a Cloud Build trigger and an Artifact Registry configured for your selected project. You can verify this by looking these services in [Google Cloud Console](https://console.cloud.google.com).
-
-Check your Google Cloud project console to verify that it now has the required resources - 
- - A Cloud Build Trigger configured to trigger on push to your repository
- - An Artifact Registry where the built collector images will be stored
-you're done! They will already be configured to automatically build docker images of the collector whenever there is a `push` to the configured branch of your repository - You can test this by making a commit and pushing it. 
-
 ### Connecting your repository to GCP account
+
+*It is recommended that you follow steps in this section before moving to the steps in [Setting up the automation](#setting-up-the-automation).* 
 
 In order to run cloud builds on certain actions made against your repository, the repository needs to be connected to your project in Google Cloud. Since this step requires you logging into your GitHub account and authenticating a GitHub app *(Google Cloud Build)*, this steps needs to be done manually through Google Cloud console. 
 
@@ -61,6 +43,25 @@ For instructions, you can follow one of the below links:
  **You should skip the last step - 'Create a Trigger', which is marked optional** - this is because
  further instructions in this readme will take care of both creating & configuring the build trigger. 
 
+### Setting up the automation
+
+1. Assuming you are in the root of the repository, move to the terraform folder containing the script - 
+    ```
+    cd build/cloudbuild-automation/tf
+    ``` 
+2. Modify the variables declared at the top in `setup-build-automation.sh` script to suit your needs. 
+3. Run the `setup-build-automation.sh` script. 
+    ```
+    ./setup-build-automation.sh
+    ```
+4. Upon running the script, terraform will initialize and will generate a few files in the current directory.
+5. After running the script successfuly and connecting your repository, you will have a Cloud Build trigger and an Artifact Registry configured for your selected project. You can verify this by looking these services in [Google Cloud Console](https://console.cloud.google.com).
+
+Check your Google Cloud project console to verify that it now has the required resources - 
+ - A Cloud Build Trigger configured to trigger on push to your repository
+ - An Artifact Registry where the built collector images will be stored
+you're done! They will already be configured to automatically build docker images of the collector whenever there is a `push` to the configured branch of your repository - You can test this by making a commit and pushing it. 
+
 ### Seeing the automation in action
 
 Now that the automated builds are setup in your repository, you can view it in action by performaing the configured action on your repository. For instance, in this sample, we setup automated builds in response to a `push` on the `main` branch.   
@@ -69,8 +70,17 @@ Now that the automated builds are setup in your repository, you can view it in a
  - Push the change to your repository (you can either make a PR or `git push` directly). 
 
 After making the push, you will see a triggered build in your [Cloud Build Console](https://console.cloud.google.com/cloud-build). 
+This automation will also be reflected on the GitHub UI against the commit. It will look something like: 
 
-After the build is successful, you will see a collector image built and placed in your configured artifact registry *(e.g. in this sample it is `otel-collectors`)*.
+![push-trigger](images/push-trigger.png)
+
+*The popup is displayed when the yellow dot is clicked*
+
+After the build is successful, you will see a collector image built and placed in your configured artifact registry *(e.g. in this sample it is `otel-collectors`)* - 
+
+![artifact-registry](images/artifact-registry.png)
+
+So your automation now updates this image after every push to your desired branch. 
 
 ### Notes 
  - Whenever you make changes to the terraform file to modify/reconfigure the Google cloud resources, you will need to run the `setup-build-automation.sh` script again so that the changes can be put into effect. 
@@ -85,6 +95,7 @@ Error: Error creating Trigger: googleapi: Error 400: Repository mapping does not
 If this happens, you need to connect the correct repository to your GitHub account. Verify that the repository name and owner are correct and that its connected. 
 
 After making sure that the names of repository and owner are correct, visit the URL in the error message. When you open the URL, it will take you to Google Cloud Console &rarr; Build Trigger page and a popup would be shown that looks similar to - 
+
 ![connect-repo](images/connect-repo.png)
 
 The UI takes you through a series of simple prompts asking you to authenticate GitHub application and select which repositories to connect to the account. As a reminder, the selected repository & repository owner should match the one you define in `setup-build-automation.sh`. 
