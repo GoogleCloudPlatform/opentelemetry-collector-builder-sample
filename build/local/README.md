@@ -1,4 +1,13 @@
 ## Prerequisites 
+
+# Table of Contents
+* [Building a Collector Binary locally](#Building-a-Collector-Binary-locally)
+* [Build a Collector Docker container locally ](#Build-a-Collector-Docker-container-locally)
+	* [Prerequisite: Setup an Artifact Registry](#Prerequisite:-Setup-an-Artifact-Registry)
+	* [Build a Docker Container image locally](#Build-a-Docker-Container-image-locally)
+* [Push your Docker Container Image to the [Artifact Registry](https://cloud.google.com/artifact-registry)](#Push-your-Docker-Container-Image-to-the-[Artifact-Registry](https://cloud.google.com/artifact-registry))
+* [Adding collector Receivers, Processors, and Exporters](#Adding-collector-Receivers,-Processors,-and-Exporters)
+
 Prior to following the instructions here, make sure of the following steps to ensure a smooth process - 
  - You should have `go` installed on your machine. You can find the installation instructions for your OS [here](https://go.dev/doc/install).
  - Make sure that you have [docker](https://docs.docker.com/engine/install/) installed on your machine.

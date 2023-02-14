@@ -1,5 +1,15 @@
 ## Automated Builds with Cloud Build
 
+# Table of Contents
+* [Prerequisites](#Prerequisites)
+* [Repository Structure - Cloudbuild-Automation](#Repository-Structure---Cloudbuild-Automation)
+* [Connecting your repository to GCP account](#Connecting-your-repository-to-GCP-account)
+* [Setting up the automation](#Setting-up-the-automation)
+* [Seeing the automation in action](#Seeing-the-automation-in-action)
+* [Notes ](#Notes)
+* [Troubleshooting: Repository mapping does not exist ](#Troubleshooting:-Repository-mapping-does-not-exist)
+
+
 This repo shows how you can leverage Google Cloud Build triggers to automate your custom collector builds based on certain events on GitHub (or other similar version control repository hosting service).
 
 The steps shown here are meant to setup automation on this GitHub repository (GoogleCloudPlatform/opentelemetry-collector-builder-sample), but they can be adapted to work for your own repository which contains code for your custom Opentelemetry collector. The [terraform resources](/build/cloudbuild-automation/tf/) can be re-used for any repository with minimal change. 
@@ -105,4 +115,3 @@ After connecting your repository, while still in `cloudbuild-automation/tf` dire
 ./setup-build-automation.sh
 ``` 
 If the repository was connected successfully, the script will execute successfully with no issues. 
-

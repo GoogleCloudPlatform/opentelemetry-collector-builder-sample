@@ -1,5 +1,20 @@
 ## Running a simple collector deployment on GKE
 
+# Table of Contents
+	* [Set up namespace](#Set-up-namespace)
+	* [Create ConfigMap](#Create-ConfigMap)
+	* [Create the Deployment](#Create-the-Deployment)
+	* [Verify the Deployment](#Verify-the-Deployment)
+	* [Expected Outcome after running this sample](#Expected-Outcome-after-running-this-sample)
+* [Try it out yourself (Optional)](#Try-it-out-yourself-(Optional))
+	* [Source of telemetry data](#Source-of-telemetry-data)
+	* [Updating the collector configuration to receive data from JSON file](#Updating-the-collector-configuration-to-receive-data-from-JSON-file)
+	* [Making the JSON file available within the cluster ](#Making-the-JSON-file-available-within-the-cluster)
+	* [Seeing the telemetry data](#Seeing-the-telemetry-data)
+	* [Making a change to the telemetry data (Optional)](#Making-a-change-to-the-telemetry-data-(Optional))
+	* [(Optional) Cleanup](#(Optional)-Cleanup)
+
+
 If this is the first example you are trying out, follow the [Setup](../setup.md) instructions to
 complete the prerequisites.
 

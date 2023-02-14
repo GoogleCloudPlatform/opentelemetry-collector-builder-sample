@@ -1,4 +1,10 @@
 
+
+# Table of Contents
+* [Building with Cloud Build](#Building-with-Cloud-Build)
+	* [Prerequisite: Setup Artifact Registry](#Prerequisite:-Setup-Artifact-Registry)
+	* [Build the Container Image with Cloud Build](#Build-the-Container-Image-with-Cloud-Build)
+
 ## Building with Cloud Build
 
 This repo also contains the commands necessary to build a collector using
