@@ -16,7 +16,7 @@ jobs:
           make generate-toc
       - name: Check for diff in table of contents
         run: |
-          if [[ $(git status -s) != "nothing to commit, working tree clean" ]]; then
+          if [[ $(git status -s) != "" ]]; then
             echo "Warning: The table of contents needs to be updated. Please run 'make generate-toc' to update it and commit the results."
             exit 1
           fi
