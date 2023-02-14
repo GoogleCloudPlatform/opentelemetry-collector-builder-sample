@@ -21,3 +21,8 @@ REGISTRY_LOCATION=us-central1
 .PHONY: setup-artifact-registry
 setup-artifact-registry:
 	gcloud artifacts repositories create ${CONTAINER_REGISTRY} --repository-format=docker --location=${REGISTRY_LOCATION} --description="Custom build OpenTelemetry collector container registry"
+
+.PHONY: generate-toc
+generate-toc:
+	python3 -m pip install markdown-toc
+	find . -name 'README.md' -exec markdown-toc -t github {} \;
