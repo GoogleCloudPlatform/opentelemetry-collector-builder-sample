@@ -1,5 +1,20 @@
 ## Redacting span attributes with the OpenTelemetry collector
 
+# Table of Contents
+	* [Set up namespace](#Set-up-namespace)
+	* [Create ConfigMaps](#Create-ConfigMaps)
+	* [Create the Deployment](#Create-the-Deployment)
+	* [Verify the Deployment](#Verify-the-Deployment)
+	* [Expected Outcome after running this sample](#Expected-Outcome-after-running-this-sample)
+* [Try it out yourself (Optional)](#Try-it-out-yourself-(Optional))
+	* [Source of telemetry data](#Source-of-telemetry-data)
+	* [Updating the collector configuration to receive data from JSON file](#Updating-the-collector-configuration-to-receive-data-from-JSON-file)
+	* [Making the JSON file available within the cluster ](#Making-the-JSON-file-available-within-the-cluster)
+	* [Seeing the redacted traces](#Seeing-the-redacted-traces)
+	* [Making a change to the telemetry data (Optional)](#Making-a-change-to-the-telemetry-data-(Optional))
+	* [(Optional) Cleanup](#(Optional)-Cleanup)
+
+
 This is a GKE-specific guide for using the collector's [redaction processor](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/redactionprocessor#redaction-processor). See the upstream documentation for the config reference.
 
 If this is the first example you are trying out, follow the [Setup](../setup.md) instructions to

@@ -1,0 +1,22 @@
+name: Check Table of Contents
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-toc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check table of contents
+        run: |
+          python3 -m pip install markdown-toc
+          make generate-toc
+      - name: Check for diff in table of contents
+        run: |
+          if [[ $(git status -s) != "" ]]; then
+            echo "Warning: The table of contents needs to be updated. Please run 'make generate-toc' to update it and commit the results."
+            exit 1
+          fi
