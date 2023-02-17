@@ -7,7 +7,8 @@
 * [Setting up the automation](#Setting-up-the-automation)
 * [Seeing the automation in action](#Seeing-the-automation-in-action)
 * [Notes ](#Notes)
-* [Troubleshooting: Repository mapping does not exist ](#Troubleshooting:-Repository-mapping-does-not-exist)
+* [Troubleshooting](#Troubleshooting)
+	* [Repository mapping does not exist ](#Repository-mapping-does-not-exist)
 
 
 This repo shows how you can leverage Google Cloud Build triggers to automate your custom collector builds based on certain events on GitHub (or other similar version control repository hosting service).

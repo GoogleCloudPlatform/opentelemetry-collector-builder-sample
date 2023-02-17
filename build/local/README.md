@@ -2,11 +2,13 @@
 
 # Table of Contents
 * [Prerequisites ](#Prerequisites)
+	* [Setup an Artifact Registry](#Setup-an-Artifact-Registry)
 * [Building a Collector Binary locally](#Building-a-Collector-Binary-locally)
 * [Build a Collector Docker container locally ](#Build-a-Collector-Docker-container-locally)
-	* [Prerequisite: Setup an Artifact Registry](#Prerequisite:-Setup-an-Artifact-Registry)
 	* [Build a Docker Container image locally](#Build-a-Docker-Container-image-locally)
-* [Push your Docker Container Image to the [Artifact Registry](https://cloud.google.com/artifact-registry)](#Push-your-Docker-Container-Image-to-the-[Artifact-Registry](https://cloud.google.com/artifact-registry))
+* [Push your Docker Container Image to the Artifact Registry](#Push-your-Docker-Container-Image-to-the-Artifact-Registry)
+	* [NOTE](#NOTE)
+* [Customizable settings  ](#Customizable-settings)
 * [Adding collector Receivers, Processors, and Exporters](#Adding-collector-Receivers,-Processors,-and-Exporters)
 
 
@@ -16,6 +18,16 @@ Prior to following the instructions here, make sure of the following steps to en
  - You should have `go` installed on your machine. You can find the installation instructions for your OS [here](https://go.dev/doc/install).
  - Make sure that you have [docker](https://docs.docker.com/engine/install/) installed on your machine.
     - Also verify that you are able to run docker commands without the need to gain root permissions using sudo. You can follow the [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/) to achieve this.
+
+### Setup an Artifact Registry
+
+To setup your artifact registry, run:
+```
+make setup-artifact-registry
+```
+This will create an artifact registry with the name `otel-collectors` within your selected Google Cloud project. The name can be changed by updating the `CONTAINER_REGISTRY` variable as explained [here](#customizable-settings).
+
+*You can view the currently selected project by running `gcloud config get project` in a terminal.*
 
 ## Building a Collector Binary locally
 
@@ -27,17 +39,7 @@ make build
 
 ## Build a Collector Docker container locally 
 
-At the end of these steps, you should have a docker image with the collector generated within the `bin` folder. 
-
-### Prerequisite: Setup an Artifact Registry
-
-To setup your artifact registry, run:
-```
-make setup-artifact-registry
-```
-This will create an artifact registry with the name `otel-collectors` within your selected Google Cloud project. The name can be changed by updating the `CONTAINER_REGISTRY` variable as explained [here](#customizable-settings).
-
-*You can view the currently selected project by running `gcloud config get project` in a terminal.*
+At the end of these steps, you should have a docker image with the collector generated within the `bin` folder.
 
 ### Build a Docker Container image locally
 
@@ -47,7 +49,7 @@ Build a docker image with:
 make docker-build
 ```
 
-## Push your Docker Container Image to the [Artifact Registry](https://cloud.google.com/artifact-registry)
+## Push your Docker Container Image to the Artifact Registry
 
 Note: you will need an existing registry for this to work, that was created as part of the [prequisites](#prerequisite-setup-an-artifact-registry).
 
