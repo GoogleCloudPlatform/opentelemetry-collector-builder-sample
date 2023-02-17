@@ -1,5 +1,7 @@
 # OpenTelemetry Collector Builder sample
 
+This repository holds a sample for using the [OpenTelemetry Collector Builder](https://github.com/open-telemetry/opentelemetry-collector-builder) configured with components generally useful for GCP deployments.
+
 # Table of Contents
 * [Using this repo](#Using-this-repo)
 	* [Sample Recipes](#Sample-Recipes)
@@ -7,19 +9,6 @@
 		* [Deploying your OpenTelemetry Collector](#Deploying-your-OpenTelemetry-Collector)
 	* [Contributing](#Contributing)
 	* [License](#License)
-
-
-This repository holds a sample for using the [OpenTelemetry Collector Builder](https://github.com/open-telemetry/opentelemetry-collector-builder) configured with components generally useful for GCP deployments.
-
-Table of Contents
-=================
-
-* [Using this repo](#using-this-repo)
-* [Sample Recipes](#sample-recipes)
-    * [Building your OpenTelemetry Collector](#building-your-opentelemetry-collector)
-    * [Deploying your OpenTelemetry Collector](#deploying-your-opentelemetry-collector)
-* [Contributing](#contributing)
-* [License](#license)
 
 # Using this repo
 

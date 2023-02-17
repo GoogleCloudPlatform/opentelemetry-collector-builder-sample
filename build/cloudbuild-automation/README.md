@@ -1,4 +1,4 @@
-## Automated Builds with Cloud Build
+# Automated Builds with Cloud Build
 
 # Table of Contents
 * [Prerequisites](#Prerequisites)
@@ -7,7 +7,8 @@
 * [Setting up the automation](#Setting-up-the-automation)
 * [Seeing the automation in action](#Seeing-the-automation-in-action)
 * [Notes ](#Notes)
-* [Troubleshooting: Repository mapping does not exist ](#Troubleshooting:-Repository-mapping-does-not-exist)
+* [Troubleshooting](#Troubleshooting)
+	* [Repository mapping does not exist ](#Repository-mapping-does-not-exist)
 
 
 This repo shows how you can leverage Google Cloud Build triggers to automate your custom collector builds based on certain events on GitHub (or other similar version control repository hosting service).
@@ -20,7 +21,7 @@ After you have followed instructions in this README, you will have the following
  - You will have an [Artifact Registry](https://cloud.google.com/artifact-registry) setup in your GCP project where all your custom opentelemetry collector docker images will be published. 
  - You will have your GitHub repository (containing the code to build your custom collector) linked with a [Cloud Build Trigger](https://cloud.google.com/build/docs/triggers) which will be configured to trigger an automated build for a collector image whenever there is a push to the `main` branch of the repository (*this can be updated to track any branch*).
 
-### Prerequisites
+## Prerequisites
 - Make sure that you have [docker](https://docs.docker.com/engine/install/) installed on your machine.
     - Also verify that you are able to run docker commands without the need to gain root permissions using sudo. You can follow the [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/) to achieve this.
 - Set the following environment variables 
@@ -33,14 +34,14 @@ After you have followed instructions in this README, you will have the following
         export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/.config/gcloud/application_default_credentials.json
         ```
 
-### Repository Structure - Cloudbuild-Automation
+## Repository Structure - Cloudbuild-Automation
 
 1. `tf/main.tf` - folder containing Terraform files that will create necessary resources in your GCP account. 
 2. `tf/setup-build-automation.sh` - convenience shell script that runs the terraform script to generate the resources in GCP account. 
 3. `builder-config.yaml` - configuration defining how to build the custom opentelemetry collector. 
 4. `cloudbuild.yaml` - the YAML file containing steps that need to be run in cloud build. The cloudbuild trigger uses this file to build the docker image for the opentelemetry custom collector.
 
-### Connecting your repository to GCP account
+## Connecting your repository to GCP account
 
 *It is recommended that you follow steps in this section before moving to the steps in [Setting up the automation](#setting-up-the-automation).* 
 
@@ -53,7 +54,7 @@ For instructions, you can follow one of the below links:
  **You should skip the last step - 'Create a Trigger', which is marked optional** - this is because
  further instructions in this readme will take care of both creating & configuring the build trigger. 
 
-### Setting up the automation
+## Setting up the automation
 
 1. Assuming you are in the root of the repository, move to the terraform folder containing the script - 
     ```
@@ -72,7 +73,7 @@ Check your Google Cloud project console to verify that it now has the required r
  - An Artifact Registry where the built collector images will be stored
 you're done! They will already be configured to automatically build docker images of the collector whenever there is a `push` to the configured branch of your repository - You can test this by making a commit and pushing it. 
 
-### Seeing the automation in action
+## Seeing the automation in action
 
 Now that the automated builds are setup in your repository, you can view it in action by performaing the configured action on your repository. For instance, in this sample, we setup automated builds in response to a `push` on the `main` branch.   
  - Make a change (e.g. a simple change to your Readme) in your repository.
@@ -92,11 +93,13 @@ After the build is successful, you will see a collector image built and placed i
 
 So your automation now updates this image after every push to your desired branch. 
 
-### Notes 
+## Notes 
  - Whenever you make changes to the terraform file to modify/reconfigure the Google cloud resources, you will need to run the `setup-build-automation.sh` script again so that the changes can be put into effect. 
  - You only need to connect your repository to your GCP account once, unless you need to connect a new repository which was not connected before.
 
-### Troubleshooting: Repository mapping does not exist 
+## Troubleshooting
+
+### Repository mapping does not exist 
 
 If you skip connecting the repositories or the connection is not proper and continue with the remaining steps, you may end up with an error that looks something like - 
 ```bash 
