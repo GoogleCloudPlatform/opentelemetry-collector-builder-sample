@@ -1,11 +1,11 @@
-## Running a simple collector deployment on GKE
+# Running a simple collector deployment on GKE
 
 # Table of Contents
-	* [Set up namespace](#Set-up-namespace)
-	* [Create ConfigMap](#Create-ConfigMap)
-	* [Create the Deployment](#Create-the-Deployment)
+* [Set up namespace](#Set-up-namespace)
+* [Create ConfigMap](#Create-ConfigMap)
+* [Create the Deployment](#Create-the-Deployment)
 	* [Verify the Deployment](#Verify-the-Deployment)
-	* [Expected Outcome after running this sample](#Expected-Outcome-after-running-this-sample)
+* [Expected Outcome after running this sample](#Expected-Outcome-after-running-this-sample)
 * [Try it out yourself (Optional)](#Try-it-out-yourself-(Optional))
 	* [Source of telemetry data](#Source-of-telemetry-data)
 	* [Updating the collector configuration to receive data from JSON file](#Updating-the-collector-configuration-to-receive-data-from-JSON-file)
@@ -24,7 +24,7 @@ complete the prerequisites.
 
 If the above requirements are not met, please ensure that all the [Setup](../setup.md) instructions have been followed. You may need to perform a [local build](../../../build/local/README.md) again.
 
-### Set up namespace
+## Set up namespace
 
 Create a namespace in your cluster to run the collector:
 
@@ -33,7 +33,7 @@ export OTEL_NAMESPACE=otel-collector
 kubectl create namespace $OTEL_NAMESPACE
 ```
 
-### Create ConfigMap
+## Create ConfigMap
 
 The [`otel-config.yaml`](otel-config.yaml) file contains a sample OpenTelemetry Collector config that is
 prepopulated with some of the receivers, exporters, and processors included in this project. Edit it to
@@ -45,7 +45,7 @@ cd deploy/gke/simple/
 kubectl create configmap otel-config --from-file=./otel-config.yaml -n $OTEL_NAMESPACE
 ```
 
-### Create the Deployment
+## Create the Deployment
 
 Create this manifest in your cluster with:
 
@@ -67,7 +67,7 @@ You can also use `kubectl logs` to check the logs of the failing pod containers 
 
 The [troubleshooting](../troubleshooting.md) guide for more information on some of the most common issues such as authentication related issues. 
 
-### Expected Outcome after running this sample
+## Expected Outcome after running this sample
 
 After a successful deployment of this sample, what we have is a GKE cluster on which we have a OpenTelemetry collector running. The collector is configured using the [otel-config](./otel-config.yaml) file. 
 

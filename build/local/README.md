@@ -1,12 +1,16 @@
-## Prerequisites 
+# Local build
 
 # Table of Contents
+* [Prerequisites ](#Prerequisites)
 * [Building a Collector Binary locally](#Building-a-Collector-Binary-locally)
 * [Build a Collector Docker container locally ](#Build-a-Collector-Docker-container-locally)
 	* [Prerequisite: Setup an Artifact Registry](#Prerequisite:-Setup-an-Artifact-Registry)
 	* [Build a Docker Container image locally](#Build-a-Docker-Container-image-locally)
 * [Push your Docker Container Image to the [Artifact Registry](https://cloud.google.com/artifact-registry)](#Push-your-Docker-Container-Image-to-the-[Artifact-Registry](https://cloud.google.com/artifact-registry))
 * [Adding collector Receivers, Processors, and Exporters](#Adding-collector-Receivers,-Processors,-and-Exporters)
+
+
+## Prerequisites 
 
 Prior to following the instructions here, make sure of the following steps to ensure a smooth process - 
  - You should have `go` installed on your machine. You can find the installation instructions for your OS [here](https://go.dev/doc/install).
@@ -51,14 +55,14 @@ Note: you will need an existing registry for this to work, that was created as p
 make docker-push
 ```
 
-#### NOTE:
+### NOTE
  - If you get a permission error, you may need to run `gcloud auth configure-docker <your-artifact-registry>` to authenticate Docker against your artifact registry. 
  - Here, `<your-artifact-registry>` would look something like `us-central1-docker.pkg.dev` if your preferred location for your created registry was `us-central1`. 
     - You can get a list of valid locations by running `gcloud artifacts locations list`.
  - The preferred location can be modified by updating the Makefile ([explained below](#Customizable-settings)).
  - If you are unsure about what should be `<your-artifact-registry>`, you can also find the exact command to run from Google Cloud console. Navigate to the Artifact Registry product page within your selected project, select the artifact registry you created and click **Setup Instructions** button. The popup should have the exact  command that you need to run to authenticate docker. 
 
-#### Customizable settings  
+## Customizable settings  
 
 You can customize these build steps by setting the following environment variables defined in the [Makefile](../../Makefile):
 
