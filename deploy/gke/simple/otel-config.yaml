@@ -57,6 +57,8 @@ receivers:
           action: labeldrop
         - regex: service_version
           action: labeldrop
+        - regex: service_name
+          action: labeldrop
 
 exporters:
   googlecloud:
