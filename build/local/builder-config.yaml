@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+dist:
+  name: otelcol-custom
+  output_path: ./bin
+
 receivers:
   - import: go.opentelemetry.io/collector/receiver/otlpreceiver
     gomod: go.opentelemetry.io/collector/receiver/otlpreceiver v0.70.0

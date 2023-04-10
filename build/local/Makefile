@@ -25,7 +25,7 @@ setup:
 .PHONY: build
 build: setup
 	mkdir -p ${OUTPUT_DIR}
-	builder --config=builder-config.yaml --name=otelcol-custom --output-path=${OUTPUT_DIR}/.
+	builder --config=builder-config.yaml
 
 .PHONY: docker-build
 docker-build: setup
