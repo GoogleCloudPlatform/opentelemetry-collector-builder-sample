@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.18 as build
-ARG  OTEL_VERSION=0.57.2
+FROM golang:1.19 as build
+ARG  OTEL_VERSION=0.75.0
 WORKDIR /app
 COPY . .
 RUN go install go.opentelemetry.io/collector/cmd/builder@v${OTEL_VERSION}
-RUN builder --config=builder-config.yaml --name=otelcol-custom --output-path=.
+RUN builder --config=builder-config.yaml
 
 FROM gcr.io/distroless/base-debian11
-COPY --from=build /app/otelcol-custom /
+COPY --from=build /app/bin/otelcol-custom /
 # 4317 - default OTLP receiver
 # 55678 - opencensus (tracing) receiver
 # 55679 - zpages
