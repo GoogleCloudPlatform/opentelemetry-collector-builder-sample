@@ -15,7 +15,7 @@
 include ../../Makefile
 
 OUTPUT_DIR=bin
-OTEL_VERSION=0.70.0
+OTEL_VERSION=0.75.0
 GCLOUD_PROJECT ?= $(shell gcloud config get project)
 
 .PHONY: setup
@@ -25,7 +25,7 @@ setup:
 .PHONY: build
 build: setup
 	mkdir -p ${OUTPUT_DIR}
-	builder --config=builder-config.yaml --name=otelcol-custom --output-path=${OUTPUT_DIR}/.
+	builder --config=builder-config.yaml
 
 .PHONY: docker-build
 docker-build: setup
