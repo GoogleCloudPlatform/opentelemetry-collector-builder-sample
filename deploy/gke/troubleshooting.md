@@ -14,64 +14,7 @@ If the collector pod fails to export metrics/logs/traces to GCP, it may need to 
 with the permissions to write to your project. One way to do this is with
 [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity).
 
-To set up Workload Identity, we are going to create a GCP service account and grant it
-the roles to write logs, metrics, and traces. Then, we will bind the GCP service account
-to the collector's Kubernetes ServiceAccount. Finally, we will annotate the Kubernetes ServiceAccount
-to identify it as the Workload Identity account.
-
-If you don't already have one, create a GCP service account to authorize the collector to send metrics, traces, and logs:
-
-```
-export GCLOUD_PROJECT=<the Google Cloud project ID to which your IAM service account belongs>
-export PROJECT_ID=<your Google Cloud project ID>
-gcloud iam service-accounts create otel-collector --project=${GCLOUD_PROJECT}
-```
-
-**NOTE:** *If your GKE cluster and your service account are created in the same GCP project, then `GCLOUD_PROJECT` & `PROJECT_ID` will be the same.*
-
-Give the service account access to write metrics, traces, and logs (or more/fewer roles based on your config):
-
-```
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member "serviceAccount:otel-collector@${GCLOUD_PROJECT}.iam.gserviceaccount.com" \
-    --role "roles/logging.logWriter"
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member "serviceAccount:otel-collector@${GCLOUD_PROJECT}.iam.gserviceaccount.com" \
-    --role "roles/cloudtrace.agent"
-    
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member "serviceAccount:otel-collector@${GCLOUD_PROJECT}.iam.gserviceaccount.com" \
-    --role "roles/monitoring.metricWriter"
-```
-
-Bind the service account to the Kubernetes ServiceAccount:
-
-```
-gcloud iam service-accounts add-iam-policy-binding "otel-collector@${GCLOUD_PROJECT}.iam.gserviceaccount.com" \
-    --role roles/iam.workloadIdentityUser \
-    --member "serviceAccount:${GCLOUD_PROJECT}.svc.id.goog[otel-collector/otel-collector]"
-```
-
-Then follow the steps [in the GCP documentation](https://cloud.google.com/kubernetes-engine/docs/how-to/workload-identity#authenticating_to) to
-annotate the `otel-collector` ServiceAccount to work with Workload Identity. For example:
-
-```
-kubectl annotate serviceaccount otel-collector \
-    --namespace $OTEL_NAMESPACE \
-    iam.gke.io/gcp-service-account=GSA_NAME@GSA_PROJECT.iam.gserviceaccount.com
-```
-
-In the above,
-- GSA_NAME: the name of your IAM service account.
-- GSA_PROJECT: this is the GCP project to which the IAM service account belongs.
-
-Essetially, `iam.gke.io/gcp-service-account` should contain the email of the service account you created using `gcloud iam service-accounts create` command in the beginning.
-
-*Note that most of the steps in the above link to GCP documentation, like **creating a new namespace** would have already been done as part of running this sample (We will be using the same `$OTEL_NAMESPACE`).*
-
-Following this, the collector pod will need to be restarted to take advantage of the new permissions.
-You can do this by simply deleting it with `kubectl delete pod/otel-collector-<POD_NAME> -n $OTEL_NAMESPACE`.
+To set up Workload Identity, follow steps in the README under "Configure Workload Identity Permissions".
 
 #### (Cleanup) Remove gcloud service account and bindings
 ```
