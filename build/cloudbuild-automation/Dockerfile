@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.19 as build
-ARG  OTEL_VERSION=0.75.0
+FROM golang:1.21 as build
+ARG  OTEL_VERSION=0.86.0
 WORKDIR /app
 COPY . .
 RUN go install go.opentelemetry.io/collector/cmd/builder@v${OTEL_VERSION}
-RUN builder --config=builder-config.yaml
+RUN CGO_ENABLED=0 builder --config=builder-config.yaml
 
 FROM gcr.io/distroless/base-debian11
 COPY --from=build /app/bin/otelcol-custom /
