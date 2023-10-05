@@ -45,6 +45,67 @@ cd deploy/gke/simple/
 kubectl create configmap otel-config --from-file=./otel-config.yaml -n $OTEL_NAMESPACE
 ```
 
+## Create the ServiceAccount
+
+Create a kubernetes service account to associate with your collector:
+
+```
+kubectl create serviceaccount otel-collector -n $OTEL_NAMESPACE
+```
+
+### Configure Workload Identity Permissions
+
+If your GKE cluster has [Workload Identity](https://cloud.google.com/kubernetes-engine/docs/concepts/workload-identity)
+enabled, which is on by default on GKE Autopilot, you will need to grant the
+OTel Collector's ServiceAccount the permission to send telemetry to Google Cloud.
+**If you are not using Workload Identity, you can skip this section.**  Without
+Workload Identity, the collector will inherit the GKE Node's IAM permissions,
+which already grant the ability to write telemetry.
+
+Set up your environment. If your service account and GKE cluster are in the same project, then these two are the same:
+```
+export PROJECT_ID=<your Google Cloud project ID>
+export SERVICE_ACCOUNT_PROJECT=$PROJECT_ID
+```
+
+Create the Google Cloud service account:
+```
+gcloud iam service-accounts create otel-collector --project=${SERVICE_ACCOUNT_PROJECT}
+```
+
+Grant it permissions to write telemetry:
+```
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member "serviceAccount:otel-collector@${SERVICE_ACCOUNT_PROJECT}.iam.gserviceaccount.com" \
+    --role "roles/logging.logWriter"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member "serviceAccount:otel-collector@${SERVICE_ACCOUNT_PROJECT}.iam.gserviceaccount.com" \
+    --role "roles/cloudtrace.agent"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member "serviceAccount:otel-collector@${SERVICE_ACCOUNT_PROJECT}.iam.gserviceaccount.com" \
+    --role "roles/monitoring.metricWriter"
+```
+
+Grant the Kubernetes service account premission to act as the IAM service account:
+
+```
+gcloud iam service-accounts add-iam-policy-binding "otel-collector@${SERVICE_ACCOUNT_PROJECT}.iam.gserviceaccount.com" \
+    --role roles/iam.workloadIdentityUser \
+    --member "serviceAccount:${SERVICE_ACCOUNT_PROJECT}.svc.id.goog[${OTEL_NAMESPACE}/otel-collector]"
+```
+
+Annotate the Kubernetes Service account to complete the setup:
+
+```
+kubectl annotate serviceaccount otel-collector \
+    --namespace $OTEL_NAMESPACE \
+    iam.gke.io/gcp-service-account=otel-collector@${SERVICE_ACCOUNT_PROJECT}.iam.gserviceaccount.com
+```
+
+**Note** If you see permisison denied errors, try deleting the collector pod to force it to pick up changes to the service account.
+
 ## Create the Deployment
 
 Create this manifest in your cluster with:
