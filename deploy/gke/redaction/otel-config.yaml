@@ -21,8 +21,6 @@ receivers:
 exporters:
   # The googlecloud exporter sends traces to google cloud trace.
   googlecloud:
-    retry_on_failure:
-      enabled: false
 
   # The logging exporter writes telemetry to stdout.
   logging:

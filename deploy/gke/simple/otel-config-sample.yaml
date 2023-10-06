@@ -48,8 +48,6 @@ receivers:
 
 exporters:
   googlecloud:
-    retry_on_failure:
-      enabled: false
     log:
       default_log_name: otel-collector-builder-sample/gke-simple-demo # This could be anything
 

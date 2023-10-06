@@ -62,8 +62,6 @@ receivers:
 
 exporters:
   googlecloud:
-    retry_on_failure:
-      enabled: false
 
   googlemanagedprometheus:
 
